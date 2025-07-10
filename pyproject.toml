@@ -20,5 +20,6 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
+    "loguru>=0.7.3",
     "python-dotenv>=1.1.1",
 ]
