@@ -24,7 +24,7 @@ class OZClient:
     async def __aexit__(self, exc_type, exc, tb):
         await self.close()
 
-    async def get_ozon_cluster_list(
+    async def get_oz_cluster_list(
         self,
         cluster_type: Literal[
             "CLUSTER_TYPE_OZON",

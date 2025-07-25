@@ -1,4 +1,3 @@
-import asyncio
 from datetime import date
 
 import aiohttp
@@ -26,9 +25,15 @@ class WBClient:
         async with self.session.get(url, params=params) as resp:
             return await resp.json()
 
-    async def get_news(self, dt: date = None):
+    async def get_news(self, *, from_dt: date = None, from_id: int = None):
+        if from_dt and from_id:
+            raise ValueError("Only one of from_dt or from_id can be specified")
+        if not from_dt and not from_id:
+            raise ValueError("One of from_dt or from_id must be specified")
+        if from_id:
+            params = {"fromID": from_id}
+        else:
+            params = {"from": from_dt.isoformat()}
         url = f"{self.BASE_URL}/api/communications/v2/news"
-        dt = dt.isoformat() if dt else date.today().isoformat()
-        params = {"from": dt}
         async with self.session.get(url, params=params) as resp:
             return await resp.json()
