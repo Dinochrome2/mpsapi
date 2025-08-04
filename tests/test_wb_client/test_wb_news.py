@@ -5,13 +5,13 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_neither_dt_nor_last_news_id_raises(wb_client):
-    with pytest.raises(ValueError, match="One of from_dt or from_id must be specified"):
+    with pytest.raises(ValueError, match="Передайте только один из параметров: либо from_dt, либо from_id, но не оба и не ни одного."):
         await wb_client.get_news()
 
 
 @pytest.mark.asyncio
 async def test_both_dt_and_last_news_id_raises(wb_client):
-    with pytest.raises(ValueError, match="Only one of from_dt or from_id can be specified"):
+    with pytest.raises(ValueError, match="Передайте только один из параметров: либо from_dt, либо from_id, но не оба и не ни одного."):
         await wb_client.get_news(from_dt=date.today(), from_id=123)
 
 
@@ -26,7 +26,7 @@ async def test_get_news_with_specific_date(wb_client):
         "id": 7179,
         "types": [{"id": 6, "name": "Маркетплейс (FBS)"}],
     }
-
+    print(f'result test_get_news_with_specific_date: {result}')
     assert not result["additionalErrors"]
     assert len(result["data"]) == 100
     assert result["data"][0] == expected
@@ -43,7 +43,9 @@ async def test_get_news_with_specific_news_id(wb_client):
         "id": 7179,
         "types": [{"id": 6, "name": "Маркетплейс (FBS)"}],
     }
-
+    print(f'result test_get_news_with_specific_news_id: {result}')
     assert not result["additionalErrors"]
     assert len(result["data"]) == 100
     assert result["data"][0] == expected
+
+

@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Literal
 
 import aiohttp
 
@@ -25,15 +26,27 @@ class WBClient:
         async with self.session.get(url, params=params) as resp:
             return await resp.json()
 
-    async def get_news(self, *, from_dt: date = None, from_id: int = None):
-        if from_dt and from_id:
-            raise ValueError("Only one of from_dt or from_id can be specified")
-        if not from_dt and not from_id:
-            raise ValueError("One of from_dt or from_id must be specified")
-        if from_id:
-            params = {"fromID": from_id}
-        else:
-            params = {"from": from_dt.isoformat()}
+    async def get_news(
+        self,
+        *,
+        from_dt: date | None = None,
+        from_id: int | None = None,
+    ):
+        if bool(from_dt) == bool(from_id):
+            raise ValueError(
+                "Передайте только один из параметров: либо from_dt, либо from_id, но не оба и не ни одного."
+            )
+        params = {"fromID": str(from_id)} if from_id is not None else {"from": from_dt.isoformat()}
+
         url = f"{self.BASE_URL}/api/communications/v2/news"
         async with self.session.get(url, params=params) as resp:
+            return await resp.json()
+
+    async def get_tariffs_commission(
+        self,
+        *,
+        locale: Literal["ru", "en", "zh"] = "ru",
+    ):
+        url = f"{self.BASE_URL}/api/v1/tariffs/commission"
+        async with self.session.get(url, params={"locale": locale}) as resp:
             return await resp.json()
